@@ -8,7 +8,7 @@ const handleUserRouter = (req, res) => {
   //login
   if (method === 'POST' && req.path === '/api/user/login') {
     const { username, password } = req.body
-    const result = login(username, password)
+    const result = login(username, password) //try to return from user from _db
     return result.then(data => {
       if (data.username) {
         req.session.username = data.username

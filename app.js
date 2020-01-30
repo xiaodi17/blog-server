@@ -44,14 +44,14 @@ const serverHandle = (req, res) => {
 
   //get path
   const url = req.url
-  req.path = url.split('?')[0]
+  req.path = url.split('?')[0] //Define path so that blog.js/user.js can get path
 
   //get query
   req.query = querystring.parse(url.split('?')[1])
 
   //get cookie
   req.cookie = {}
-  const cookieStr = req.headers.cookie || ''
+  const cookieStr = req.headers.cookie || '' //k1=v1;k2=v2;k3=v3 in string format
   cookieStr.split(';').forEach(item => {
     if (!item) {
       return
@@ -62,31 +62,19 @@ const serverHandle = (req, res) => {
     req.cookie[key] = val
   })
 
-  // //get session
-  // let needSetCookie = false
-  // let userId = req.cookie.userid
-  // if (userId) {
-  //   if (!SESSION_DATA[userId]) {
-  //     SESSION_DATA[userId] = {} //initialize to empty object
-  //   }
-  // } else {
-  //   needSetCookie = true
-  //   userId = `${Date.now()}_${Math.random()}`
-  //   SESSION_DATA[userId] = {}
-  // }
-  // req.session = SESSION_DATA[userId]
-
   //handle session (use redis)
   let needSetCookie = false
   let userId = req.cookie.userid
   if (!userId) {
     needSetCookie = true
     userId = `${Date.now()}_${Math.random()}`
+
     //initialize redis session value
     set(userId, {})
   }
-  //get session
+  //analysis session
   req.sessionId = userId
+
   get(req.sessionId)
     .then(sessionData => {
       if (sessionData == null) {
@@ -107,12 +95,7 @@ const serverHandle = (req, res) => {
       req.body = postData
 
       //handle blog route
-      // const blogData = handleBlogRouter(req, res)
-      // if (blogData) {
-      //   res.end(JSON.stringify(blogData))
-      //   return
-      // }
-      const blogResult = handleBlogRouter(req, res)
+      const blogResult = handleBlogRouter(req, res) //this is promise from blog.js router
       if (blogResult) {
         blogResult.then(blogData => {
           if (needSetCookie) {
@@ -127,11 +110,6 @@ const serverHandle = (req, res) => {
       }
 
       //handle user route
-      // const userData = handleUserRouter(req, res)
-      // if (userData) {
-      //   res.end(JSON.stringify(userData))
-      //   return
-      // }
       const userData = handleUserRouter(req, res)
       if (userData) {
         userData.then(userData => {

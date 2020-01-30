@@ -9,6 +9,7 @@ redisClient.on('error', err => {
 
 function set(key, val) {
   if (typeof val === 'object') {
+    //redis needs to save in string format
     val = JSON.stringify(val)
   }
   redisClient.set(key, val, redis.print)

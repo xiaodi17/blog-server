@@ -15,11 +15,12 @@ const loginCheck = req => {
 }
 
 const handleBlogRouter = (req, res) => {
-  const method = req.method //GET POST
+  const method = req.method // check request whether GET or POST
   const id = req.query.id
 
   //get blog list
   if (method === 'GET' && req.path === '/api/blog/list') {
+    //req.path is getting from app.js
     let author = req.query.author || ''
     const keyword = req.query.keyword || ''
 
@@ -34,7 +35,7 @@ const handleBlogRouter = (req, res) => {
       author = req.session.username
     }
     // return new SuccessModel(listData)
-    const result = getList(author, keyword)
+    const result = getList(author, keyword) //result is a promise
     return result.then(listData => {
       return new SuccessModel(listData)
     })
@@ -50,7 +51,7 @@ const handleBlogRouter = (req, res) => {
     })
   }
 
-  //post a blog
+  //post a new blog
   if (method === 'POST' && req.path === '/api/blog/new') {
     // const data = newBlog(req.body)
     // return new SuccessModel(data)
