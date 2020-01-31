@@ -13,7 +13,7 @@ const rl = readline.createInterface({
 })
 
 let chromeNum = 0
-let num = 0
+let sum = 0
 
 //line finish reading trigger
 rl.on('line', lineData => {
